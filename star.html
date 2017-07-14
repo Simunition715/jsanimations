@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>starfield</title>
+	<style>
+		body {
+			width: 100%;
+			margin: 0 auto;
+		}
+		#canvas {
+			background-color: #fefefe;
+			border: 2px solid #fff;
+			margin-left: 200px;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<script>
+		//creates dimensions of canvas
+		var canvas = document.getElementById("canvas");
+		canvas.width = 800;
+		canvas.height = 800;
+
+		//variables
+		var c = canvas.getContext("2d");
+		var numStars = 500;
+		var stars = [];
+		var size = 1;
+		var speed = 10;
+		var color = ["red","blue","green","yellow","white"];
+		var greyscale = ['grey','lightgrey','darkgrey'];
+		var newcolor = color[Math.floor(Math.random()*color.length)];
+		//focal length
+		var fl = canvas.width;
+		//center of canvas
+		var centerX = canvas.width/2;
+		var centerY = canvas.height/2;
+		//creates new star
+		for(var i = 0; i < numStars; i++){
+			stars[i] = new Star();
+		}
+
+
+
+		function Star(){
+			//star starting position
+			this.x = Math.random()*canvas.width;
+			this.y = Math.random()*canvas.height;
+			this.z = Math.random()*canvas.width;
+
+		//moves star
+		this.move = function(){
+			this.z = this.z-speed;
+			if(this.z<=1){
+				this.z = canvas.width;
+			}
+
+		}	
+			//function to show stars on canvas
+			this.show = function(){
+				var x,y,s;
+				x = (this.x - centerX) * (fl/this.z);
+				x = x + centerX;
+
+				y = (this.y - centerY) * (fl/this.z);
+				y = y + centerY;
+
+				s = size * (fl/this.z);
+
+
+				c.beginPath();
+				// c.fillStyle = greyscale[Math.floor(Math.random()*greyscale.length)];
+				// c.fillStyle = color[Math.floor(Math.random()*color.length)];
+				c.fillStyle = "white";
+				c.arc(x,y,s,0,Math.PI*2);
+				c.fill();
+			}
+		}
+
+
+
+		function draw(){
+			//canvas color
+			c.fillStyle = "black";
+			c.fillRect(0,0,canvas.width,canvas.height);
+
+			//creates new star once when star falls off canvas
+			for(var i = 0; i < numStars; i++){
+				stars[i].show();
+				stars[i].move();
+			}
+		}
+
+		// method tells the browser that you wish to perform an animation and requests that the browser call a specified function to update an animation before the next repaint. The method takes as an argument a callback to be invoked before the repaint.
+		function update(){
+			draw();
+			window.requestAnimationFrame(update);
+		}
+		update();
+
+	</script>
+
+</body>
+</html>
